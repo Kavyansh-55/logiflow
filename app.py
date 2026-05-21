@@ -12,17 +12,26 @@ from openpyxl.utils import get_column_letter
 from pypdf import PdfReader, PdfWriter
 
 # =====================================
-# API
+# API MANAGEMENT (LOCAL & CLOUD SAFE)
 # =====================================
 
+# Safe fallback initialization
 API_KEY = "AIzaSyAW7pTxN74jsPgOR-vcqYfXmRQ97KO7XOA"
+
+try:
+    # Check if we are on the cloud server with registered secrets
+    if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+        API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    # If secrets configuration isn't loaded locally, use the fallback string safely
+    pass
 
 client = genai.Client(
     api_key=API_KEY
 )
 
 # =====================================
-# PAGE
+# PAGE SETUP
 # =====================================
 
 st.set_page_config(
@@ -32,7 +41,7 @@ st.set_page_config(
 )
 
 # =====================================
-# SESSION
+# STATE FRAMEWORK
 # =====================================
 
 if "credits" not in st.session_state:
@@ -53,12 +62,12 @@ if "password" not in st.session_state:
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-# Permanent lock logic
+# Boundary checking
 if st.session_state.credits <= 0:
     st.session_state.locked = True
 
 # =====================================
-# CSS STYLE OVERRIDES (DARK MODE SAFE)
+# FLUID RESPONSIVE CSS INTERFACE
 # =====================================
 
 st.markdown("""
@@ -91,40 +100,57 @@ button[data-testid="stTabBarTicket"] {
 
 .stTabs [data-baseweb="tab-list"] {
     justify-content: center;
-    gap: 45px;
+    gap: clamp(15px, 4vw, 45px);
 }
 
-/* Hard-coded styling rule to prevent dark mode text blending bugs */
+/* RESPONSIVE FLUID TYPOGRAPHY LOGIC */
 .logo {
-    font-size: 58px;
+    font-size: clamp(32px, 6vw, 56px) !important;
     font-weight: 800;
-    letter-spacing: 12px;
+    letter-spacing: clamp(4px, 1vw, 12px);
     color: #FFFFFF !important;
     text-shadow: 0px 4px 12px rgba(139, 92, 246, 0.4);
     text-align: center;
     margin-bottom: 5px;
+    white-space: nowrap !important;
 }
 
 .subtitle {
     text-align: center;
-    font-size: 14px;
-    margin-bottom: 35px;
+    font-size: clamp(11px, 2.5vw, 14px);
+    margin-bottom: 30px;
     color: #A3BFD9 !important;
     font-weight: 500;
     letter-spacing: 0.5px;
 }
 
+/* FLEXIBLE COMPACT METRIC CARDS */
 .metric {
-    padding: 22px;
+    padding: 16px;
     background: linear-gradient(180deg, #111827, #0f172a);
-    border-radius: 22px;
+    border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    height: 150px;
+    min-height: 110px;
     text-align: center;
+    margin-bottom: 15px;
+}
+
+.metric-title {
+    font-size: 13px;
+    color: #94A3B8;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.metric-value {
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 700;
+    color: #FFFFFF;
+    white-space: nowrap;
 }
 
 .lock {
-    padding: 35px;
+    padding: 30px;
     border-radius: 20px;
     background: linear-gradient(180deg, #1e1b4b, #111827);
     border: 1px solid #7c3aed;
@@ -136,42 +162,42 @@ button[data-testid="stTabBarTicket"] {
     background: #111827 !important;
     border: 2px dashed #7c3aed !important;
     border-radius: 25px !important;
-    padding: 40px !important;
-    min-height: 240px !important;
-    margin-top: 20px !important;
+    padding: clamp(20px, 5vw, 40px) !important;
+    min-height: 180px !important;
+    margin-top: 10px !important;
 }
 
 .stButton button {
-    height: 56px;
+    height: 52px;
     border-radius: 14px;
     font-weight: 600;
     width: 100%;
 }
 
-/* Premium Structured Pricing Custom Alignment Card Layouts */
 .pricing-card {
     background: linear-gradient(180deg, #111827, #0f172a);
     border-radius: 22px;
-    padding: 30px;
+    padding: 25px;
     border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 20px;
     min-height: 380px;
 }
 
 .pricing-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
 .pricing-price {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: #A78BFA;
     margin-bottom: 20px;
 }
 
 .pricing-feature {
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 12px;
     color: #E2E8F0;
     display: flex;
@@ -183,22 +209,28 @@ button[data-testid="stTabBarTicket"] {
     font-weight: bold;
     margin-right: 10px;
 }
+
+/* MEDIA QUERY BREAKPOINT FOR MOBILE FIXES */
+@media (max-width: 768px) {
+    .block-container {
+        max-width: 98%;
+    }
+    .pricing-card {
+        min-height: auto;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================
-# PREMIUM PROFILE NAVIGATION HUB
+# CONTROL PANEL & PROFILE ANCHOR
 # =====================================
 
 left, center, right = st.columns([3, 6, 3])
 
 with left:
-    # Interactive Popover Dashboard Panel
-    with st.popover(
-            "🌐 Public Account Menu" if not st.session_state.logged_in else f"👤 Account: {st.session_state.email}"):
+    with st.popover("🌐 Public Account Menu" if not st.session_state.logged_in else f"👤 Account Open"):
         st.markdown("### 📁 Management Panel")
-
-        # User dynamic profile variables
         user_email = st.text_input("Operator Workspace Email",
                                    value=st.session_state.email if st.session_state.logged_in else "public_demo@logiflow.io")
         user_pass = st.text_input("Security Key / Password", value=st.session_state.password, type="password")
@@ -233,11 +265,11 @@ with center:
 
 with right:
     st.markdown(
-        f"<div style='text-align: right; padding-top: 12px; font-weight: 600; font-size: 16px; color: #94A3B8;'>Credits: {st.session_state.credits}/3</div>",
+        f"<div style='text-align: right; padding-top: 12px; font-weight: 600; font-size: 15px; color: #94A3B8;'>Credits: {st.session_state.credits}/3</div>",
         unsafe_allow_html=True)
 
 # =====================================
-# NAVIGATION ENGINE
+# PLATFORM SECTIONS
 # =====================================
 
 tab1, tab2, tab3 = st.tabs([
@@ -248,7 +280,7 @@ tab1, tab2, tab3 = st.tabs([
 
 
 # =====================================
-# PDF BOUNDARY CONSTRAINTS
+# PROCESSING UTILITIES
 # =====================================
 
 def first_two_pages(pdf_bytes):
@@ -271,14 +303,9 @@ def parse_pdf(pdf):
     Date
     Carrier
     Total Charges
-
     Return JSON only
     """
-    part = types.Part.from_bytes(
-        data=pdf,
-        mime_type="application/pdf"
-    )
-
+    part = types.Part.from_bytes(data=pdf, mime_type="application/pdf")
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=[prompt, part],
@@ -287,16 +314,11 @@ def parse_pdf(pdf):
     return json.loads(response.text)
 
 
-# =====================================
-# AUTOMATED EXCEL UTILITY
-# =====================================
-
 def create_excel(df):
     out = BytesIO()
     with pd.ExcelWriter(out, engine="openpyxl") as w:
         df.to_excel(w, index=False)
         sh = w.sheets["Sheet1"]
-
         fill = PatternFill(fill_type="solid", start_color="1E3A8A")
         font = Font(bold=True, color="FFFFFF")
 
@@ -316,11 +338,11 @@ def create_excel(df):
 
 
 # =====================================
-# TAB 1: WORKPLACE INTAKE INTERFACE
+# TAB 1: OPERATIONAL WORKSPACE
 # =====================================
 
 with tab1:
-    st.markdown("<div style='height:40px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
     if st.session_state.locked:
         st.markdown("""
@@ -331,7 +353,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        c1, c2 = st.columns(2)
+        c1, c2 = st.columns([1, 1])
         with c1:
             email_input = st.text_input("Create Workspace Operator Email", value="")
         with c2:
@@ -346,20 +368,26 @@ with tab1:
                 st.rerun()
             else:
                 st.error("Please fill in corporate registry parameters to lock in your software account structure.")
-
         st.warning(
             "Device session locked under Sandbox rule limits. Please migrate your system token context to a paid tier.")
 
     else:
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.metric("Credits Running", f"{st.session_state.credits}/3")
-        with c2:
-            st.metric("Processing Profile", "PDF → Flat Excel")
-        with c3:
-            st.metric("Engine Version", "Neural Core V2")
+        # Custom HTML metrics block for clean responsive scaling
+        m1, m2, m3 = st.columns([1, 1, 1])
+        with m1:
+            st.markdown(
+                f"<div class='metric'><div class='metric-title'>Credits Running</div><div class='metric-value'>{st.session_state.credits}/3</div></div>",
+                unsafe_allow_html=True)
+        with m2:
+            st.markdown(
+                "<div class='metric'><div class='metric-title'>Processing Profile</div><div class='metric-value'>PDF → Excel</div></div>",
+                unsafe_allow_html=True)
+        with m3:
+            st.markdown(
+                "<div class='metric'><div class='metric-title'>Engine Version</div><div class='metric-value'>Neural Core V2</div></div>",
+                unsafe_allow_html=True)
 
-        st.markdown("<div style='height:30px'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
         file = st.file_uploader(
             "Upload System Document File Here",
@@ -389,13 +417,13 @@ with tab1:
                     )
 
 # =====================================
-# TAB 2: CORPORATE PRICING ARRAYS
+# TAB 2: PRICING PLANS
 # =====================================
 
 with tab2:
-    st.markdown("<div style='height:35px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:25px'></div>", unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3 = st.columns([1, 1, 1])
 
     with c1:
         st.markdown("""
@@ -413,7 +441,7 @@ with tab2:
 
     with c2:
         st.markdown("""
-        <div class="pricing-card" style="border-top: 4px solid #10B981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);">
+        <div class="pricing-card" style="border-top: 4px solid #10B981;">
             <div class="pricing-title">Logistics Pro</div>
             <div class="pricing-price">$149 <span style="font-size:14px; color:#64748B;">/ month</span></div>
             <div class="pricing-feature"><span class="checkmark">✓</span> Volumetric Cap: 2,500 Invoices/Mo</div>
@@ -443,11 +471,11 @@ with tab2:
                 "An enterprise solution architect has been assigned to contact your organization desk within 1 hour.")
 
 # =====================================
-# TAB 3: SYSTEM TRANSACTION RECORDS
+# TAB 3: HISTORY RECORDS
 # =====================================
 
 with tab3:
-    st.markdown("<div style='height:35px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:25px'></div>", unsafe_allow_html=True)
     st.subheader("Recent Document Audit Run Matrix")
 
     if len(st.session_state.history) == 0:

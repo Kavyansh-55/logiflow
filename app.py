@@ -15,15 +15,14 @@ from pypdf import PdfReader, PdfWriter
 # API MANAGEMENT (LOCAL & CLOUD SAFE)
 # =====================================
 
-# Safe fallback initialization
-API_KEY = "AIzaSy_FAKE_DUMMY_STRING_FOR_LOCAL_ONLY"
+# SECURE CONFIGURATION: Live site pulls from the Streamlit cloud vault.
+# Change the string below to your fresh key ONLY when testing locally on your laptop.
+API_KEY = "AIzaSy_DUMMY_PLACEHOLDER_KEEPS_YOUR_REPO_SAFE"
 
 try:
-    # Check if we are on the cloud server with registered secrets
     if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
         API_KEY = st.secrets["GEMINI_API_KEY"]
 except Exception:
-    # If secrets configuration isn't loaded locally, use the fallback string safely
     pass
 
 client = genai.Client(
@@ -62,7 +61,6 @@ if "password" not in st.session_state:
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-# Boundary checking
 if st.session_state.credits <= 0:
     st.session_state.locked = True
 
@@ -80,7 +78,6 @@ html, body, [class*="css"] {
 
 #MainMenu, footer, header {
     visibility: hidden !important;
-    display: none !important;
 }
 
 .block-container {
@@ -97,7 +94,6 @@ html, body, [class*="css"] {
     gap: clamp(15px, 4vw, 45px);
 }
 
-/* RESPONSIVE FLUID TYPOGRAPHY LOGIC */
 .logo {
     font-size: clamp(32px, 6vw, 56px) !important;
     font-weight: 800;
@@ -118,7 +114,6 @@ html, body, [class*="css"] {
     letter-spacing: 0.5px;
 }
 
-/* FLEXIBLE COMPACT METRIC CARDS */
 .metric {
     padding: 16px;
     background: linear-gradient(180deg, #111827, #0f172a);
@@ -204,7 +199,6 @@ html, body, [class*="css"] {
     margin-right: 10px;
 }
 
-/* MEDIA QUERY BREAKPOINT FOR MOBILE FIXES */
 @media (max-width: 768px) {
     .block-container {
         max-width: 98%;
@@ -215,36 +209,6 @@ html, body, [class*="css"] {
 }
 </style>
 """, unsafe_allow_html=True)
-
-# =================================================================
-# DOM DESTRUCTION LOOP (REMOVES FREE BADGES & PROFILE SECURELY)
-# =================================================================
-st.components.v1.html("""
-<script>
-    function purgeStreamlitBranding() {
-        // 1. Clear regular document header elements
-        const headers = window.parent.document.querySelectorAll('header, footer, #MainMenu');
-        headers.forEach(h => h.style.setProperty('display', 'none', 'important'));
-
-        // 2. Locate and dissolve elements hidden inside modern Shadow DOM wrappers
-        const appToolbar = window.parent.document.querySelector('.stAppDeployDropdown');
-        if(appToolbar) appToolbar.style.setProperty('display', 'none', 'important');
-
-        // 3. Search and destroy specific floating status and author identity tokens
-        const elements = window.parent.document.querySelectorAll('*');
-        elements.forEach(el => {
-            if (el.className && typeof el.className === 'string' && el.className.includes('viewerBadge')) {
-                el.style.setProperty('display', 'none', 'important');
-            }
-        });
-    }
-
-    // Execute loop instantly and set fallback loops to handle lazy-loaded elements
-    purgeStreamlitBranding();
-    setInterval(purgeStreamlitBranding, 400);
-</script>
-""", height=0, width=0)
-# =================================================================
 
 # =====================================
 # CONTROL PANEL & PROFILE ANCHOR
@@ -301,7 +265,6 @@ tab1, tab2, tab3 = st.tabs([
     "💳 Upgrade & Plans",
     "📊 Processing History"
 ])
-
 
 # =====================================
 # PROCESSING UTILITIES
@@ -396,7 +359,6 @@ with tab1:
             "Device session locked under Sandbox rule limits. Please migrate your system token context to a paid tier.")
 
     else:
-        # Custom HTML metrics block for clean responsive scaling
         m1, m2, m3 = st.columns([1, 1, 1])
         with m1:
             st.markdown(

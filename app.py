@@ -17,7 +17,7 @@ from pypdf import PdfReader, PdfWriter
 
 # SECURE CONFIGURATION: Live site pulls from the Streamlit cloud vault.
 # Change the string below to your fresh key ONLY when testing locally on your laptop.
-API_KEY = "AIzaSy_DUMMY_PLACEHOLDER_KEEPS_YOUR_REPO_SAFE"
+API_KEY = "PLACEHOLDER_LOCAL_KEY"
 
 try:
     if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:

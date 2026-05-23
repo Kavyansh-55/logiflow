@@ -72,26 +72,44 @@ if st.session_state.credits <= 0:
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
+/* ================================================================= */
+/* CRITICAL BRANDING & WATERMARK REMOVAL OVERRIDES (STRICT PROTECTION) */
+/* ================================================================= */
 #MainMenu, footer, header {
-    visibility: hidden;
+    visibility: hidden !important;
+    display: none !important;
 }
 
-/* Hide the Streamlit footer and branding attribution badge */
-.stAppDeployDropdown, [data-testid="stStatusWidget"] {
+/* Hard nuclear strike on Streamlit free tier branding and profile overlays */
+.stAppDeployDropdown, 
+[data-testid="stStatusWidget"], 
+div[data-testid="stFooter"], 
+footer,
+.viewerBadge_container__1QS99,
+[data-testid="stHeader"],
+#tabs-bnd3-tab-0,
+#tabs-bnd3-tab-1,
+#tabs-bnd3-tab-2 {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+}
+
+/* TARGET THE FLOATING BADGE REGION SPECIFICALLY */
+div[class*="viewerBadge"], 
+div[class*="styles_viewerBadge"], 
+a[href*="streamlit.io"] {
     display: none !important;
 }
-div[data-testid="stFooter"] {
-    display: none !important;
-}
-iframe[title="Sign in with Google Button"] {
-    display: none !important;
-}
+/* ================================================================= */
 
 .block-container {
     max-width: 94%;

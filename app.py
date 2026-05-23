@@ -78,38 +78,10 @@ html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
-/* ================================================================= */
-/* CRITICAL BRANDING & WATERMARK REMOVAL OVERRIDES (STRICT PROTECTION) */
-/* ================================================================= */
 #MainMenu, footer, header {
     visibility: hidden !important;
     display: none !important;
 }
-
-/* Hard nuclear strike on Streamlit free tier branding and profile overlays */
-.stAppDeployDropdown, 
-[data-testid="stStatusWidget"], 
-div[data-testid="stFooter"], 
-footer,
-.viewerBadge_container__1QS99,
-[data-testid="stHeader"],
-#tabs-bnd3-tab-0,
-#tabs-bnd3-tab-1,
-#tabs-bnd3-tab-2 {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    width: 0 !important;
-}
-
-/* TARGET THE FLOATING BADGE REGION SPECIFICALLY */
-div[class*="viewerBadge"], 
-div[class*="styles_viewerBadge"], 
-a[href*="streamlit.io"] {
-    display: none !important;
-}
-/* ================================================================= */
 
 .block-container {
     max-width: 94%;
@@ -243,6 +215,36 @@ a[href*="streamlit.io"] {
 }
 </style>
 """, unsafe_allow_html=True)
+
+# =================================================================
+# DOM DESTRUCTION LOOP (REMOVES FREE BADGES & PROFILE SECURELY)
+# =================================================================
+st.components.v1.html("""
+<script>
+    function purgeStreamlitBranding() {
+        // 1. Clear regular document header elements
+        const headers = window.parent.document.querySelectorAll('header, footer, #MainMenu');
+        headers.forEach(h => h.style.setProperty('display', 'none', 'important'));
+        
+        // 2. Locate and dissolve elements hidden inside modern Shadow DOM wrappers
+        const appToolbar = window.parent.document.querySelector('.stAppDeployDropdown');
+        if(appToolbar) appToolbar.style.setProperty('display', 'none', 'important');
+
+        // 3. Search and destroy specific floating status and author identity tokens
+        const elements = window.parent.document.querySelectorAll('*');
+        elements.forEach(el => {
+            if (el.className && typeof el.className === 'string' && el.className.includes('viewerBadge')) {
+                el.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
+    
+    // Execute loop instantly and set fallback loops to handle lazy-loaded elements
+    purgeStreamlitBranding();
+    setInterval(purgeStreamlitBranding, 400);
+</script>
+""", height=0, width=0)
+# =================================================================
 
 # =====================================
 # CONTROL PANEL & PROFILE ANCHOR

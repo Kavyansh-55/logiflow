@@ -225,7 +225,7 @@ st.components.v1.html("""
         // 1. Clear regular document header elements
         const headers = window.parent.document.querySelectorAll('header, footer, #MainMenu');
         headers.forEach(h => h.style.setProperty('display', 'none', 'important'));
-        
+
         // 2. Locate and dissolve elements hidden inside modern Shadow DOM wrappers
         const appToolbar = window.parent.document.querySelector('.stAppDeployDropdown');
         if(appToolbar) appToolbar.style.setProperty('display', 'none', 'important');
@@ -238,7 +238,7 @@ st.components.v1.html("""
             }
         });
     }
-    
+
     // Execute loop instantly and set fallback loops to handle lazy-loaded elements
     purgeStreamlitBranding();
     setInterval(purgeStreamlitBranding, 400);

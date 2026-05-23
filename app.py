@@ -72,7 +72,7 @@ if st.session_state.credits <= 0:
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
@@ -82,10 +82,14 @@ html, body, [class*="css"] {
     visibility: hidden;
 }
 
-[data-testid='stToolbar'],
-[data-testid='stHeaderActionElements'],
-.stMarkdown a.header-anchor,
-button[data-testid="stTabBarTicket"] {
+/* Hide the Streamlit footer and branding attribution badge */
+.stAppDeployDropdown, [data-testid="stStatusWidget"] {
+    display: none !important;
+}
+div[data-testid="stFooter"] {
+    display: none !important;
+}
+iframe[title="Sign in with Google Button"] {
     display: none !important;
 }
 

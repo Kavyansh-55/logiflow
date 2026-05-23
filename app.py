@@ -16,7 +16,7 @@ from pypdf import PdfReader, PdfWriter
 # =====================================
 
 # Safe fallback initialization
-API_KEY = "AIzaSyAW7pTxN74jsPgOR-vcqYfXmRQ97KO7XOA"
+API_KEY = "AIzaSy_FAKE_DUMMY_STRING_FOR_LOCAL_ONLY"
 
 try:
     # Check if we are on the cloud server with registered secrets
